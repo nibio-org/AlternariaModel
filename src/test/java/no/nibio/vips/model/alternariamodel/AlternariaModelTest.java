@@ -24,7 +24,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -59,23 +58,17 @@ public class AlternariaModelTest {
     public void testGetResult() throws Exception {
         System.out.println("getResult");
         ModelConfiguration config   = this.getConfiguration("/weatherdata_leaf_wetness_temperature.json");
-       // dataMatrix                  = new DataMatrix();
-        //Date            currentDate     =   this.dataMatrix.getFirstDateWithParameterValue(DataMatrix.BT);
-        //System.out.println("Current Date : "+currentDate.toString());
-        
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
-        
-        
-        
-        //TODO temporary commented out
-        // List<Result> expResult = null;
         List<Result> result = instance.getResult();
-       // assertEquals(expResult, result);
-       
-        // TODO review the generated test code and remove the default call to fail.
-        assertNotSame(0, result.size());
-        //fail("The test case is a prototype.");
+        assertNotNull(result);
+        
+        for(Result res:result)
+        {
+            System.out.println(res.toString());
+        }
+
+        
     }
 
     /**
@@ -84,12 +77,10 @@ public class AlternariaModelTest {
     @org.junit.jupiter.api.Test
     public void testGetModelId() {
         System.out.println("getModelId");
-        AlternariaModel instance = new AlternariaModel();
-        ModelId expResult = null;
-        ModelId result = instance.getModelId();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        AlternariaModel     instance    = new AlternariaModel();
+        ModelId             expResult   = new ModelId(AlternariaModel.NAME_MODEL_ID);
+        ModelId             result      = instance.getModelId();
+        assertEquals(expResult.toString(), result.toString());
     }
 
     /**
@@ -99,11 +90,8 @@ public class AlternariaModelTest {
     public void testGetModelName_0args() {
         System.out.println("getModelName");
         AlternariaModel instance = new AlternariaModel();
-        String expResult = "";
         String result = instance.getModelName();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(result);
     }
 
     /**
@@ -114,11 +102,8 @@ public class AlternariaModelTest {
         System.out.println("getModelName");
         String language = "";
         AlternariaModel instance = new AlternariaModel();
-        String expResult = "";
         String result = instance.getModelName(language);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(result);
     }
 
     /**
@@ -144,9 +129,7 @@ public class AlternariaModelTest {
         AlternariaModel instance = new AlternariaModel();
         String expResult = "";
         String result = instance.getCopyright();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(result);
     }
 
     /**
@@ -158,9 +141,7 @@ public class AlternariaModelTest {
         AlternariaModel instance = new AlternariaModel();
         String expResult = "";
         String result = instance.getModelDescription();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull(result);
     }
 
     /**
@@ -256,7 +237,7 @@ public class AlternariaModelTest {
     @org.junit.jupiter.api.Test
     public void testSetConfiguration() throws Exception {
         System.out.println("setConfiguration");
-        ModelConfiguration config = null;
+        ModelConfiguration config = this.getConfiguration("/weatherdata_leaf_wetness_temperature.json");
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
         // TODO review the generated test code and remove the default call to fail.
