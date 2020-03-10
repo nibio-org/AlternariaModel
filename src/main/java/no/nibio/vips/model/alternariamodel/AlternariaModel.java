@@ -536,14 +536,26 @@ public class AlternariaModel extends I18nImpl implements Model{
         double  meanTeamperature    =   0.0;
         int     leafWetnessHour     =   0;
         
-        if(tmDate.compareTo(lwDate) == 0)
+        if((null != tmDate) && (null != lwDate))
         {
-            meanTeamperature        =   dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag);
-            leafWetnessHour         =   dataMatrix.getParamIntValueForDate(lwDate, lwFlag);
-            resultDSV               =   getDSV_DAILY(meanTeamperature, leafWetnessHour);
-            
-            //Set DSV into data matrix
-            dataMatrix.setParamIntValueForDate(lwDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV);
+            if(tmDate.compareTo(lwDate) == 0)
+            {
+                meanTeamperature        =       (null ==  dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag))
+                                            ?   meanTeamperature
+                                            :   dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag);
+                leafWetnessHour         =       (null == dataMatrix.getParamIntValueForDate(lwDate, lwFlag))
+                                            ?   leafWetnessHour
+                                            :   dataMatrix.getParamIntValueForDate(lwDate, lwFlag);
+                
+                if(meanTeamperature != 0.0 && leafWetnessHour != 0)
+                {
+                    resultDSV               =   getDSV_DAILY(meanTeamperature, leafWetnessHour);
+                    //Set DSV into data matrix
+                    dataMatrix.setParamIntValueForDate(lwDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV);
+
+                }
+
+            }
         }
         
     }
