@@ -480,14 +480,14 @@ public class AlternariaModel extends I18nImpl implements Model{
         if ((temp >= 18  && temp <= 20) && (lw <= 3 ))                  dsvResult =     0;
         if ((temp >= 18  && temp <= 20) && (lw >= 4  && lw <= 8 ))      dsvResult =     1;
         if ((temp >= 18  && temp <= 20) && (lw >= 9  && lw <= 15))      dsvResult =     2;
-        if ((temp >= 18  && temp <= 20) && (lw <= 16 && lw <= 22))      dsvResult =     3;
+        if ((temp >= 18  && temp <= 20) && (lw >= 16 && lw <= 22))      dsvResult =     3;
         if ((temp >= 18  && temp <= 20) && (lw >= 23))                  dsvResult =     4;
         
         if ((temp >= 21  && temp <= 25) && (lw <= 2 ))                  dsvResult =     0;
-        if ((temp >= 21  && temp <= 25) && (lw <= 3  && lw <= 5 ))      dsvResult =     1;
-        if ((temp >= 21  && temp <= 25) && (lw <= 6  && lw <= 12))      dsvResult =     2;
-        if ((temp >= 21  && temp <= 25) && (lw <= 13 && lw <= 20))      dsvResult =     3;
-        if ((temp >= 21  && temp <= 25) && (lw >= 23))                  dsvResult =     4;
+        if ((temp >= 21  && temp <= 25) && (lw >= 3  && lw <= 5 ))      dsvResult =     1;
+        if ((temp >= 21  && temp <= 25) && (lw >= 6  && lw <= 12))      dsvResult =     2;
+        if ((temp >= 21  && temp <= 25) && (lw >= 13 && lw <= 20))      dsvResult =     3;
+        if ((temp >= 21  && temp <= 25) && (lw >= 21))                  dsvResult =     4;
         
         if ((temp >= 26  && temp <= 29) && (lw <= 3))                   dsvResult =     0;
         if ((temp >= 26  && temp <= 29) && (lw >= 4  && lw <= 8))       dsvResult =     1;
