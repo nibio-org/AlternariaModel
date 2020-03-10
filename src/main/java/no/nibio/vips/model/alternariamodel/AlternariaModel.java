@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -61,19 +62,23 @@ import no.nibio.vips.util.WeatherUtil;
  * @author bhabesh
  */
 public class AlternariaModel extends I18nImpl implements Model{
-  public final static ModelId   MODEL_ID    =   new ModelId("ALTERNARIA");
-  public final static int       THRESHOLD   =   30;
   
-  private   final   ModelUtil   modelUtil;
-  private           DataMatrix  dataMatrix;
+    public final static String      NAME_MODEL_ID   =   "ALTERNARIA";
+    public final static ModelId     MODEL_ID        =   new ModelId(NAME_MODEL_ID);
+    public final static int         THRESHOLD       =   30;
+    
+    
   
-  private           TimeZone    timeZone;
+    private   final   ModelUtil   modelUtil;
+    private           DataMatrix  dataMatrix;
   
-  public AlternariaModel()
-  {
-      super("no.nibio.vips.model.alternariamodel.texts");
-      this.modelUtil    = new ModelUtil();
-  }
+    private           TimeZone    timeZone;
+  
+    public AlternariaModel()
+    {
+        super("no.nibio.vips.model.alternariamodel.texts");
+        this.modelUtil    = new ModelUtil();
+    }
           
     @Override
     public List<Result> getResult() throws ModelExcecutionException
