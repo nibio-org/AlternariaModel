@@ -53,7 +53,6 @@ import no.nibio.vips.model.ConfigValidationException;
 import no.nibio.vips.model.Model;
 import no.nibio.vips.model.ModelExcecutionException;
 import no.nibio.vips.model.ModelId;
-import no.nibio.vips.model.alternariamodel.bo.AltanariaWeatherBO;
 import no.nibio.vips.util.ModelUtil;
 import no.nibio.vips.util.WeatherUtil;
 
@@ -341,7 +340,7 @@ public class AlternariaModel extends I18nImpl implements Model{
         Date                        dateHourlyLw_previousDay                        =   null; 
         
        
-        
+        int count = 0;
                                         
         for(WeatherObservation weatherObj: observations)
         {
@@ -403,7 +402,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                         }
                         
                         dateHourlyTm_previousDay = dateHourlyTm_currentDay;
-                        break;
+                        break; 
                     
                     
                     
@@ -412,7 +411,11 @@ public class AlternariaModel extends I18nImpl implements Model{
                         if(weatherObj.getLogIntervalId().equals(WeatherObservation.LOG_INTERVAL_ID_1H))
                         {
                             WeatherObservation      altanariaWeatherBO_lw_hourly    =   weatherObj;
-                            if(dateHourlyLw_currentDay.after(dateHourlyLw_previousDay))
+                            if(
+                                        null != dateHourlyLw_currentDay
+                                    &&  null != dateHourlyLw_previousDay 
+                                    &&  dateHourlyLw_currentDay.after(dateHourlyLw_previousDay)
+                                )
                             {
                                 int counterLwHourly     = 0;
                                 for(WeatherObservation wo: altenariaWeatherLIstHourly_lw)
@@ -423,18 +426,21 @@ public class AlternariaModel extends I18nImpl implements Model{
                                     }
 
                                 }
+
                                 dataMatrix.setParamIntValueForDate(
                                                                         dateHourlyLw_currentDay
                                                                     ,   DataMatrix.LEAF_WETNESS_DURATION
                                                                     ,   counterLwHourly
                                                                    );
+                                
                                 altenariaWeatherLIstHourly_lw   =   new ArrayList<WeatherObservation>();
                             }
 
                                 altenariaWeatherLIstHourly_lw.add(altanariaWeatherBO_lw_hourly);
                         }
                                 dateHourlyLw_previousDay = dateHourlyLw_currentDay;
-                                break;
+                        break;
+                                
                     
                 }
 
@@ -464,8 +470,6 @@ public class AlternariaModel extends I18nImpl implements Model{
      */
     public int getDSV_DAILY(double temp, int lw )
     {
-        //if ((temp >=  && temp < ) && (lw < )) dsvResult = ;
-        
         int dsvResult = 0;
 
         if ((temp >= 10  && temp <= 17) && (lw <= 6))                   dsvResult  =    0;
@@ -496,7 +500,7 @@ public class AlternariaModel extends I18nImpl implements Model{
     }
     
     /**
-     * Get a trimmed date with out hour,minute,second,milli second
+     * Get a trimmed date without hour,minute,second,milli second
      * @param date
      * @return 
      */
@@ -513,7 +517,7 @@ public class AlternariaModel extends I18nImpl implements Model{
     }
 
     /**
-     * 
+     * Set DSV values to the DataMatrix in HashMap
      * @param dataMatrix
      * @param tmDate
      * @param tmFlag
