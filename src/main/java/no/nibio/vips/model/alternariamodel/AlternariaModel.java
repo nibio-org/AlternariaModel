@@ -394,7 +394,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                                         )
                             {
                                 dataMatrix.setParamDoubleValueForDate   (
-                                                                                dateHourlyTm_currentDay
+                                                                                weatherObj.getTimeMeasured()  //TODO - Might be the date need to be trimmed
                                                                             ,   DataMatrix.TEMPERATURE_MEAN
                                                                             ,   weatherObj.getValue()
                                                                         );
