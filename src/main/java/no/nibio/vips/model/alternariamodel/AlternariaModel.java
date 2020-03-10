@@ -368,13 +368,16 @@ public class AlternariaModel extends I18nImpl implements Model{
                                 )
                             {
                                 double counterTMHourly     =    0;
+                                
+                                
                                 //TODO calculation of accumulation value and add to daily
                                 for(WeatherObservation wo: altenariaWeatherLIstHourly_tm)
                                 {
                                     counterTMHourly                 =       counterTMHourly + wo.getValue();
+                                    System.out.println(" date : "+wo.getTimeMeasured()+" -- type : "+wo.getLogIntervalId()+ " -- value : "+wo.getValue() + "-- current date : "+dateHourlyTm_currentDay + " -- previous day : "+dateHourlyTm_previousDay);
                                 }
                                 //average value of temperature for a day
-                                dataMatrix.setParamDoubleValueForDate   (       dateHourlyTm_currentDay
+                                dataMatrix.setParamDoubleValueForDate   (       dateHourlyTm_previousDay
                                                                             ,   DataMatrix.TEMPERATURE_MEAN
                                                                             ,   (
                                                                                     counterTMHourly
@@ -433,7 +436,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                                 }
 
                                 dataMatrix.setParamIntValueForDate(
-                                                                        dateHourlyLw_currentDay
+                                                                        dateHourlyLw_previousDay
                                                                     ,   DataMatrix.LEAF_WETNESS_DURATION
                                                                     ,   counterLwHourly
                                                                    );
