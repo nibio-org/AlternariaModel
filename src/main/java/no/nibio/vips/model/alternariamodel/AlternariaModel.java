@@ -341,7 +341,7 @@ public class AlternariaModel extends I18nImpl implements Model{
         
        
         int count = 0;
-                                        
+        Collections.sort(observations);
         for(WeatherObservation weatherObj: observations)
         {
                 
