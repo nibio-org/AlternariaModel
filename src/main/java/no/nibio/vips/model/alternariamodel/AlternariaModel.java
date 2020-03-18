@@ -369,12 +369,11 @@ public class AlternariaModel extends I18nImpl implements Model{
                             {
                                 double counterTMHourly     =    0;
                                 
-                                
                                 //TODO calculation of accumulation value and add to daily
                                 for(WeatherObservation wo: altenariaWeatherLIstHourly_tm)
                                 {
                                     counterTMHourly                 =       counterTMHourly + wo.getValue();
-                                    System.out.println(" date : "+wo.getTimeMeasured()+" -- type : "+wo.getLogIntervalId()+ " -- value : "+wo.getValue() + "-- current date : "+dateHourlyTm_currentDay + " -- previous day : "+dateHourlyTm_previousDay);
+
                                 }
                                 //average value of temperature for a day
                                 dataMatrix.setParamDoubleValueForDate   (       dateHourlyTm_previousDay
@@ -409,7 +408,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                             }
                         }
                         
-                        dateHourlyTm_previousDay = dateHourlyTm_currentDay;
+                        
                         break; 
                     
                     
@@ -432,7 +431,6 @@ public class AlternariaModel extends I18nImpl implements Model{
                                     {
                                         counterLwHourly = counterLwHourly + 1;
                                     }
-
                                 }
 
                                 dataMatrix.setParamIntValueForDate(
@@ -446,12 +444,14 @@ public class AlternariaModel extends I18nImpl implements Model{
 
                                 altenariaWeatherLIstHourly_lw.add(altanariaWeatherBO_lw_hourly);
                         }
-                                dateHourlyLw_previousDay = dateHourlyLw_currentDay;
+                                
                         break;
                                 
                     
                 }
 
+                
+                
             //Setting DSV values to dataMatrix
             setDSV(
                         dataMatrix
@@ -460,10 +460,12 @@ public class AlternariaModel extends I18nImpl implements Model{
                     ,   dateHourlyLw_previousDay
                     ,   DataMatrix.LEAF_WETNESS_DURATION
                    );
-            
-            
+
+            dateHourlyTm_previousDay = dateHourlyTm_currentDay;
+            dateHourlyLw_previousDay = dateHourlyLw_currentDay;
             
         }
+        
     }
 
   
@@ -540,32 +542,68 @@ public class AlternariaModel extends I18nImpl implements Model{
                             ,   String lwFlag
                         )
     {
-        int     resultDSV           =   0;
-        double  meanTeamperature    =   0.0;
-        int     leafWetnessHour     =   0;
+        int     resultDSV_tm           =   0;
+        int     resultDSV_lw           =   0;
+        
         
         if((null != tmDate) && (null != lwDate))
         {
-            if(tmDate.compareTo(lwDate) == 0)
-            {
-                meanTeamperature        =       (null ==  dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag))
-                                            ?   meanTeamperature
-                                            :   dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag);
-                leafWetnessHour         =       (null == dataMatrix.getParamIntValueForDate(lwDate, lwFlag))
-                                            ?   leafWetnessHour
-                                            :   dataMatrix.getParamIntValueForDate(lwDate, lwFlag);
-                
-                if(meanTeamperature != 0.0 && leafWetnessHour != 0)
-                {
-                    resultDSV               =   getDSV_DAILY(meanTeamperature, leafWetnessHour);
-                    //Set DSV into data matrix
-                    dataMatrix.setParamIntValueForDate(lwDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV);
-
-                }
-
-            }
+  
+                    resultDSV_tm    =   getDSV_DAILY(
+                                                            getMeanTeamperature(dataMatrix,tmDate,tmFlag)
+                                                        ,  
+                                                            getLeafWetnessHour(dataMatrix,tmDate,lwFlag)
+                                                    );
+                    
+  
+                    
+                    dataMatrix.setParamIntValueForDate(tmDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV_tm);
+                    
+                    resultDSV_lw    =   getDSV_DAILY(
+                                        getMeanTeamperature(dataMatrix,lwDate,tmFlag)
+                                    ,  
+                                        getLeafWetnessHour(dataMatrix,lwDate,lwFlag)
+                                );
+                    
+  
+                    dataMatrix.setParamIntValueForDate(lwDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV_lw);
         }
         
+    }
+    
+    /**
+     * 
+     * @param dataMatrix
+     * @param tmDate
+     * @param tmFlag
+     * @return 
+     */
+    private double getMeanTeamperature (    DataMatrix dataMatrix
+                                        ,    Date tmDate
+                                        ,   String tmFlag
+                                        )
+    {
+        return     (null ==  dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag))
+                                            ?   0.0
+                                            :   dataMatrix.getParamDoubleValueForDate(tmDate, tmFlag);
+    }
+            
+    /**
+     * 
+     * @param dataMatrix
+     * @param lwDate
+     * @param lwFlag
+     * @return 
+     */
+    private int     getLeafWetnessHour(
+                                        DataMatrix dataMatrix
+                                    ,   Date lwDate
+                                    ,   String lwFlag
+                                    )
+    {
+            return (null == dataMatrix.getParamIntValueForDate(lwDate, lwFlag))
+                                            ?   0
+                                            :   dataMatrix.getParamIntValueForDate(lwDate, lwFlag);
     }
     
     
