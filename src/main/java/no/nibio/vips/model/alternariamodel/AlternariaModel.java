@@ -459,7 +459,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                                 int counterLwHourly     = 0;
                                 for(WeatherObservation wo: altenariaWeatherLIstHourly_lw)
                                 {
-                                    if(wo.getValue()    >= THRESHOLD )
+                                    if(wo.getValue()    >= THRESHOLD_LW )
                                     {
                                         counterLwHourly = counterLwHourly + 1;
                                     }
@@ -497,7 +497,12 @@ public class AlternariaModel extends I18nImpl implements Model{
             dateHourlyLw_previousDay = dateHourlyLw_currentDay;
             
         }
-        
+ /*
+        Gson gson   = new Gson();
+        System.out.println("Data matrix in JSON : "+gson.toJson(dataMatrix));
+   */     
+                
+        //System.out.println("Data matrix : "+dataMatrix ); 
     }
 
   
