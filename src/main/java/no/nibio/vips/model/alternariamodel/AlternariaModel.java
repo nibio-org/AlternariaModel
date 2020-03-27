@@ -39,7 +39,9 @@ package no.nibio.vips.model.alternariamodel;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -48,12 +50,15 @@ import java.util.List;
 import java.util.TimeZone;
 import no.nibio.vips.entity.ModelConfiguration;
 import no.nibio.vips.entity.Result;
+import no.nibio.vips.entity.ResultImpl;
 import no.nibio.vips.entity.WeatherObservation;
 import no.nibio.vips.i18n.I18nImpl;
 import no.nibio.vips.model.ConfigValidationException;
 import no.nibio.vips.model.Model;
 import no.nibio.vips.model.ModelExcecutionException;
 import no.nibio.vips.model.ModelId;
+import no.nibio.vips.util.CommonNamespaces;
+import no.nibio.vips.util.JSONUtil;
 import no.nibio.vips.util.ModelUtil;
 import no.nibio.vips.util.WeatherUtil;
 
@@ -122,10 +127,7 @@ public class AlternariaModel extends I18nImpl implements Model{
         return AlternariaModel.MODEL_ID;
     }
 
-    /**
-     * 
-     * @return 
-     */
+
     @Override
     public String getModelName()
     {
@@ -313,13 +315,9 @@ public class AlternariaModel extends I18nImpl implements Model{
     }
 
     /**
-     * method name : setConfiguration
-     * @param      :
-     * @return     : void
-     *
-     * purpose     :
-     *
-     * date        : Expression date is undefined on line 20, column 19 in Templates/Classes/Code/GeneratedMethodBody. Expression time is undefined on line 20, column 27 in Templates/Classes/Code/GeneratedMethodBody.
+     * 
+     * @param config
+     * @throws ConfigValidationException 
      */
     @Override
     public void setConfiguration(ModelConfiguration config) throws ConfigValidationException
@@ -347,18 +345,23 @@ public class AlternariaModel extends I18nImpl implements Model{
         Date                        dateHourlyLw_currentDay                         =   null; 
         Date                        dateHourlyLw_previousDay                        =   null; 
         
-       
-        int count = 0;
+        WeatherUtil wUtil = new WeatherUtil();
+                // Setting timezone
+        this.timeZone = TimeZone.getTimeZone((String) config.getConfigParameter("timeZone"));
+        //System.out.println("TimeZone=" + this.timeZone);
+        int         count = 0;
         Collections.sort(observations);
         for(WeatherObservation weatherObj: observations)
         {
                 
-
+                weatherObj.setTimeMeasured(wUtil.pragmaticAdjustmentToMidnight(weatherObj.getTimeMeasured(), timeZone));
+                //System.out.println(" weatherObj : "+weatherObj);
+                
                 switch(weatherObj.getElementMeasurementTypeId())
                 {
                 
                     case    DataMatrix.TEMPERATURE_MEAN:
-                        dateHourlyTm_currentDay                                     =   trimmedDate(weatherObj.getTimeMeasured());
+                        dateHourlyTm_currentDay                                     =   trimmedDate(weatherObj.getTimeMeasured(),timeZone);
                         if(weatherObj.getLogIntervalId().equals(WeatherObservation.LOG_INTERVAL_ID_1H))
                         {
                             WeatherObservation      altanariaWeatherBO_tm_hourly    =   weatherObj;
@@ -417,7 +420,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                     
                     
                     case    DataMatrix.LEAF_WETNESS_DURATION:
-                        dateHourlyLw_currentDay                                     =   trimmedDate(weatherObj.getTimeMeasured());
+                        dateHourlyLw_currentDay                                     =   trimmedDate(weatherObj.getTimeMeasured(),timeZone);
                         if(weatherObj.getLogIntervalId().equals(WeatherObservation.LOG_INTERVAL_ID_1H))
                         {
                             WeatherObservation      altanariaWeatherBO_lw_hourly    =   weatherObj;
@@ -517,15 +520,17 @@ public class AlternariaModel extends I18nImpl implements Model{
      * @param date
      * @return 
      */
-    private Date trimmedDate(Date date)
+    private Date trimmedDate(Date date, TimeZone timezone)
     {
         Date        resultDate  = date; 
         Calendar     calendar   =  Calendar.getInstance();
+        calendar.setTimeZone(timezone);
         calendar.setTime(resultDate);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
+        
         return   calendar.getTime();
     }
 
