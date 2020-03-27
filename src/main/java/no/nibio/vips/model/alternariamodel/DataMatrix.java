@@ -44,7 +44,9 @@ import no.nibio.vips.util.DateMap;
  * @author bhabesh
  */
 public class DataMatrix extends DateMap{
+    public final static String  WET_HOUR                        =   "WH";           //  Leaf wetness 2 m, minutes per hour
     public final static String  LEAF_WETNESS_DURATION           =   "BT";           //  Leaf wetness 2 m, minutes per hour
     public final static String  TEMPERATURE_MEAN                =   "TM";           //  Mean Temperature
     public final static String  DAILY_DISEASE_SEVERITY_VALUE    =   "DSV";          //  Daily Disease Severity Value
+    
 }

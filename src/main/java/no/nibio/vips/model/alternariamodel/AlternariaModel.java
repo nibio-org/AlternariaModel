@@ -63,9 +63,12 @@ import no.nibio.vips.util.WeatherUtil;
  */
 public class AlternariaModel extends I18nImpl implements Model{
   
-    public final static String      NAME_MODEL_ID   =   "ALTERNARIA";
-    public final static ModelId     MODEL_ID        =   new ModelId(NAME_MODEL_ID);
-    public final static int         THRESHOLD       =   30;
+    public final static String      NAME_MODEL_ID       =   "ALTERNARIA";
+    public final static ModelId     MODEL_ID            =   new ModelId(NAME_MODEL_ID);
+    public final static int         THRESHOLD_LW        =   30;                         // Threshold for leave wetness
+    public final static int         THRESHOLD_DSV_MIN   =   20;                         // Threshold Minimum for DSV 
+    public final static int         THRESHOLD_DSV_MAX   =   30;                         // Threshold Maximum for DSV 
+    public final static int         THRESHOLD_DSV_BASE  =   5;                         // Threshold Maximum for DSV 
     
     
   
@@ -606,5 +609,51 @@ public class AlternariaModel extends I18nImpl implements Model{
                                             :   dataMatrix.getParamIntValueForDate(lwDate, lwFlag);
     }
     
-    
+    private Integer getWarningStatus(Integer accumulatedDSV)
+    {
+        Integer result  = 0;
+        
+        /*
+           Hint of warning system
+            1 = Missing data (Blue) - OK
+
+            2 = No Risk (Green) – From 0 to DSV-threshold minus 5
+
+            3 = Possible Risk (Yellow) – From DSV-threshold minus 5 to DSV-threshold
+
+            4 = High Risk (Red) – {Above DSV-threshold
+        */
+  
+        if (accumulatedDSV >= 0)
+        {
+            if(accumulatedDSV >= THRESHOLD_DSV_MAX)
+            {
+                result = Result.WARNING_STATUS_HIGH_RISK;
+            }
+            else
+            {
+                // 20 -- 25
+                if((accumulatedDSV < THRESHOLD_DSV_MAX) && (accumulatedDSV >= (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE)) )
+                {
+                    result = Result.WARNING_STATUS_MINOR_RISK;
+                }
+                else
+                {
+                    if(accumulatedDSV < (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE))
+                    {
+                        result = Result.WARNING_STATUS_NO_RISK;
+                    }
+
+                }
+
+            }
+        }
+        else
+        {
+             result = Result.WARNING_STATUS_NO_WARNING_MISSING_DATA;
+             
+        }
+        
+        return result;
+    }
 }
