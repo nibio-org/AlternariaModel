@@ -104,10 +104,36 @@ public class AlternariaModel extends I18nImpl implements Model{
                 //TODO write proper list of result object
         
         //Date            currentDate     =   this.dataMatrix.getFirstDateWithParameterValue(DataMatrix.LEAF_WETNESS_DURATION);
-        List<Result>    dummyResult     =   new ArrayList<>();
+        List<Result>    results         =   new ArrayList<>();
         
+        Date            currentDate     =   this.dataMatrix.getFirstDateWithParameterValue(DataMatrix.TEMPERATURE_MEAN);
+        Date            endDate         =   this.dataMatrix.getLastDateWithParameterValue(DataMatrix.TEMPERATURE_MEAN);
+        DecimalFormat   dFormat         =   new DecimalFormat("###.##");
+        DecimalFormat   iFormat         =   new DecimalFormat("###");
+        Calendar        cal             =   Calendar.getInstance(timeZone);
+        int             accumulatedDSV  =   0;
         
-        return dummyResult;
+        while(currentDate.before(endDate))
+        {
+            Result              result              = new ResultImpl();
+            
+                                accumulatedDSV      =   accumulatedDSV  +   dataMatrix.getParamIntValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE);
+                                
+                    result.setValidTimeStart(currentDate);
+                    result.setWarningStatus(getWarningStatus(accumulatedDSV));
+                    
+                    result.setValue(CommonNamespaces.NS_WEATHER, DataMatrix.TEMPERATURE_MEAN, dFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.TEMPERATURE_MEAN)));
+                    result.setValue(NAME_MODEL_ID, DataMatrix.WET_HOUR, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.LEAF_WETNESS_DURATION)));
+                    result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE)));
+                   
+                    results.add(result);
+                    
+            cal.setTime(currentDate);
+            cal.add(Calendar.DATE, 1);
+            currentDate = cal.getTime();               
+        }
+        
+        return results;
     }
 
 
