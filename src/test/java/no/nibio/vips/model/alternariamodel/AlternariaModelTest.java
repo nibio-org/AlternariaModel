@@ -58,6 +58,7 @@ public class AlternariaModelTest {
     public void testGetResult() throws Exception {
         System.out.println("getResult");
         ModelConfiguration config   = this.getConfiguration("/weatherdata_leaf_wetness_temperature.json");
+        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates("/reset_dates.json"));
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
         List<Result> result = instance.getResult();
@@ -235,15 +236,18 @@ public class AlternariaModelTest {
     public void testSetConfiguration() throws Exception {
         System.out.println("setConfiguration");
         ModelConfiguration config = this.getConfiguration("/weatherdata_leaf_wetness_temperature.json");
+        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates("/reset_dates.json"));
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
         assertNotNull(instance);
     }
     
     
-        private ModelConfiguration getConfiguration(String fileName)
+    private ModelConfiguration getConfiguration(String fileName)
     {
+        List<Date> sprayingDates  =  new ArrayList<Date>();
         try {
+            
             ModelConfiguration config = new ModelConfiguration();
             config.setModelId(AlternariaModel.MODEL_ID.toString());
             
@@ -285,9 +289,62 @@ public class AlternariaModelTest {
                 fail("Data input from file is not a JSON array");
             }
             config.setConfigParameter("observations", observations);
+            
+            
+            try{
+                
+            }
+            catch(Exception ex)
+            {
+                
+            }
 
             
             return config;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        } 
+    }
+        
+        
+    private List<Date> getConfigurationSprayingDates(String fileName)
+    {
+        
+        try {
+            List<Date> sprayingDates  =  new ArrayList<Date>();
+   
+            BufferedInputStream inputStream = new BufferedInputStream(this.getClass().getResourceAsStream(fileName));
+            JsonFactory f = new MappingJsonFactory();
+            JsonParser jp = f.createParser(inputStream);
+            JsonNode all = jp.readValueAsTree();
+            
+            ObjectMapper mapper = new ObjectMapper();
+
+            Date firstDate = null;
+            Date lastDate = null;
+            if(all.isArray())
+            {
+                for(JsonNode node : all){
+                   
+                    Date timeMeasuredForSpray = (Date)mapper.convertValue(node, new TypeReference<Date>(){});
+                    //System.out.println("Spraying Date : "+timeMeasuredForSpray);
+                    if(timeMeasuredForSpray != null )
+                    {
+                        sprayingDates.add(timeMeasuredForSpray);
+                    }
+
+                }
+
+            }
+            else
+            {
+                fail("Data input from file is not a JSON array for list of spraying dates");
+            }
+
+
+            
+            return sprayingDates;
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;

@@ -75,6 +75,8 @@ public class AlternariaModel extends I18nImpl implements Model{
     public final static int         THRESHOLD_DSV_MAX   =   30;                         // Threshold Maximum for DSV 
     public final static int         THRESHOLD_DSV_BASE  =   5;                         // Threshold Maximum for DSV 
     
+    public final static String      YES                 =   "Y";                        //   Spray Date
+    public final static String      NO                  =   "N"; 
     
   
     private   final   ModelUtil   modelUtil;
@@ -117,7 +119,17 @@ public class AlternariaModel extends I18nImpl implements Model{
         {
             Result              result              = new ResultImpl();
             
-                                accumulatedDSV      =   accumulatedDSV  +   dataMatrix.getParamIntValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE);
+                                
+                                    if(dataMatrix.getParamStringValueForDate(currentDate, DataMatrix.SPRAYING_DATE).equals(YES))
+                                    {
+                                        accumulatedDSV  = 0;
+                                    }
+                                    else
+                                
+                                    {
+                                        accumulatedDSV      =   accumulatedDSV  +   dataMatrix.getParamIntValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE);
+                                    }
+                                    
                                 
                     result.setValidTimeStart(currentDate);
                     result.setWarningStatus(getWarningStatus(accumulatedDSV));
@@ -363,6 +375,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                                                                                                 config.getConfigParameter("observations")
                                                                                             ,   new TypeReference<List<WeatherObservation>>(){}
                                                                                         );
+        List<Date>                  sprayingDates                                   =   null;
         List<WeatherObservation>    altenariaWeatherLIstHourly_tm                   =   new ArrayList<WeatherObservation>();
         List<WeatherObservation>    altenariaWeatherLIstHourly_lw                   =   new ArrayList<WeatherObservation>();
            
@@ -375,6 +388,14 @@ public class AlternariaModel extends I18nImpl implements Model{
                 // Setting timezone
         this.timeZone = TimeZone.getTimeZone((String) config.getConfigParameter("timeZone"));
         //System.out.println("TimeZone=" + this.timeZone);
+                            
+                            
+                                    sprayingDates                                   =   (null == mapper.convertValue(config.getConfigParameter(DataMatrix.SPRAYING_DATES), new TypeReference<List<Date>>(){})) 
+                                                                                        ?   null
+                                                                                        :   mapper.convertValue(config.getConfigParameter(DataMatrix.SPRAYING_DATES), new TypeReference<List<Date>>(){});
+                            
+
+        
         int         count = 0;
         Collections.sort(observations);
         for(WeatherObservation weatherObj: observations)
@@ -382,6 +403,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                 
                 weatherObj.setTimeMeasured(wUtil.pragmaticAdjustmentToMidnight(weatherObj.getTimeMeasured(), timeZone));
                 //System.out.println(" weatherObj : "+weatherObj);
+                Date    sprayDate   =   null;
                 
                 switch(weatherObj.getElementMeasurementTypeId())
                 {
@@ -482,15 +504,32 @@ public class AlternariaModel extends I18nImpl implements Model{
                     
                 }
 
-                
-                
+        if(null != sprayingDates && sprayingDates.size() != 0) 
+        {
+            for (Date spDate:sprayingDates)
+            {
+                spDate  = trimmedDate(spDate, timeZone);
+                if(
+                        (null != spDate && (null != dateHourlyTm_previousDay ) && (null != dateHourlyLw_previousDay))
+                        &&
+                            (
+                                     ( spDate.compareTo(dateHourlyTm_previousDay)== 0 || spDate.before(dateHourlyTm_previousDay) )
+                                ||  ( spDate.compareTo(dateHourlyLw_previousDay)== 0 || spDate.before(dateHourlyLw_previousDay) )
+                            )
+                  )
+                {
+                    sprayDate   = trimmedDate(spDate, timeZone);
+                }
+
+            }
+        }         
             //Setting DSV values to dataMatrix
-            setDSV(
-                        dataMatrix
+            setDSV(dataMatrix
                     ,   dateHourlyTm_previousDay
                     ,   DataMatrix.TEMPERATURE_MEAN
                     ,   dateHourlyLw_previousDay
                     ,   DataMatrix.LEAF_WETNESS_DURATION
+                    ,   sprayDate
                    );
 
             dateHourlyTm_previousDay = dateHourlyTm_currentDay;
@@ -574,12 +613,7 @@ public class AlternariaModel extends I18nImpl implements Model{
      * @param lwFlag 
      */
     private void setDSV(
-                                DataMatrix dataMatrix
-                            ,   Date tmDate
-                            ,   String tmFlag
-                            ,   Date lwDate
-                            ,   String lwFlag
-                        )
+            DataMatrix dataMatrix, Date tmDate, String tmFlag, Date lwDate, String lwFlag, Date sprayDate)
     {
         int     resultDSV_tm           =   0;
         int     resultDSV_lw           =   0;
@@ -594,9 +628,25 @@ public class AlternariaModel extends I18nImpl implements Model{
                                                             getLeafWetnessHour(dataMatrix,tmDate,lwFlag)
                                                     );
                     
-  
-                    
+                                                    
+                    dataMatrix.setParamStringValueForDate(tmDate, DataMatrix.SPRAYING_DATE, NO);
                     dataMatrix.setParamIntValueForDate(tmDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV_tm);
+                    if(null != sprayDate ) 
+                    {
+                      if (tmDate.compareTo(sprayDate)== 0 || sprayDate.before(tmDate))
+                      {
+                          dataMatrix.setParamStringValueForDate(sprayDate, DataMatrix.SPRAYING_DATE, YES);
+                      }
+                      else if(null == sprayDate || sprayDate.after(tmDate))
+                            {
+                                dataMatrix.setParamStringValueForDate(sprayDate, DataMatrix.SPRAYING_DATE, NO);
+                            }
+                      
+                     }
+                    
+                        
+                    
+                    
                     
                     resultDSV_lw    =   getDSV_DAILY(
                                         getMeanTeamperature(dataMatrix,lwDate,tmFlag)
@@ -604,8 +654,28 @@ public class AlternariaModel extends I18nImpl implements Model{
                                         getLeafWetnessHour(dataMatrix,lwDate,lwFlag)
                                 );
                     
-  
+                    dataMatrix.setParamStringValueForDate(lwDate, DataMatrix.SPRAYING_DATE, NO);
                     dataMatrix.setParamIntValueForDate(lwDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, resultDSV_lw);
+                    
+
+                        if(null != sprayDate)
+                        {
+                            if ((lwDate.compareTo(sprayDate)== 0) || sprayDate.before(lwDate))
+                            {
+                                dataMatrix.setParamStringValueForDate(sprayDate, DataMatrix.SPRAYING_DATE, YES);
+                            }
+                            else if(null == sprayDate || sprayDate.after(lwDate))
+                            {
+                                dataMatrix.setParamStringValueForDate(sprayDate, DataMatrix.SPRAYING_DATE, NO);
+                            }
+                        }
+                        
+                    
+                    
+                    
+                    
+                    
+                    
         }
         
     }
