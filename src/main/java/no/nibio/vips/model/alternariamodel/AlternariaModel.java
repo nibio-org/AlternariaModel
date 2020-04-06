@@ -136,6 +136,7 @@ public class AlternariaModel extends I18nImpl implements Model{
                     
                     result.setValue(CommonNamespaces.NS_WEATHER, DataMatrix.TEMPERATURE_MEAN, dFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.TEMPERATURE_MEAN)));
                     result.setValue(NAME_MODEL_ID, DataMatrix.WET_HOUR, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.LEAF_WETNESS_DURATION)));
+                    result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE_SUM, iFormat.format(accumulatedDSV));
                     result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE)));
                    
                     results.add(result);
@@ -144,7 +145,8 @@ public class AlternariaModel extends I18nImpl implements Model{
             cal.add(Calendar.DATE, 1);
             currentDate = cal.getTime();               
         }
-        
+        //System.out.println("DataMatrix : "+dataMatrix);
+         //System.out.println("-----------------------------------------------------------------");
         return results;
     }
 
@@ -738,7 +740,7 @@ public class AlternariaModel extends I18nImpl implements Model{
             }
             else
             {
-                // 20 -- 25
+                // e.g. 20 -- 30
                 if((accumulatedDSV < THRESHOLD_DSV_MAX) && (accumulatedDSV >= (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE)) )
                 {
                     result = Result.WARNING_STATUS_MINOR_RISK;

@@ -48,6 +48,7 @@ public class DataMatrix extends DateMap{
     public final static String  LEAF_WETNESS_DURATION           =   "BT";           //  Leaf wetness 2 m, minutes per hour
     public final static String  TEMPERATURE_MEAN                =   "TM";           //  Mean Temperature
     public final static String  DAILY_DISEASE_SEVERITY_VALUE    =   "DSV";          //  Daily Disease Severity Value
+    public final static String  DAILY_DISEASE_SEVERITY_VALUE_SUM=   "DSV_SUM";      //  Daily Disease Severity Value
     public final static String  SPRAYING_DATES                  =   "sprayingDates";//  Spraying dates
     public final static String  SPRAYING_DATE                   =   "sprayingDate"; //   Spray Date
     
