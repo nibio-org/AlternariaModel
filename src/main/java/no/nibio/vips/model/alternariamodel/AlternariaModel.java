@@ -734,14 +734,14 @@ public class AlternariaModel extends I18nImpl implements Model{
   
         if (accumulatedDSV >= 0)
         {
-            if(accumulatedDSV >= THRESHOLD_DSV_MAX)
+            if(accumulatedDSV >= THRESHOLD_DSV_MIN)
             {
                 result = Result.WARNING_STATUS_HIGH_RISK;
             }
             else
             {
                 // e.g. 20 -- 30
-                if((accumulatedDSV < THRESHOLD_DSV_MAX) && (accumulatedDSV >= (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE)) )
+                if((accumulatedDSV < THRESHOLD_DSV_MIN) && (accumulatedDSV >= (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE)) )
                 {
                     result = Result.WARNING_STATUS_MINOR_RISK;
                 }
