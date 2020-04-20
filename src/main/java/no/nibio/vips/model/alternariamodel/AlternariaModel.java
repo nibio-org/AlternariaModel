@@ -145,7 +145,7 @@ public class AlternariaModel extends I18nImpl implements Model{
             cal.add(Calendar.DATE, 1);
             currentDate = cal.getTime();               
         }
-        //System.out.println("DataMatrix : "+dataMatrix);
+    //    System.out.println("DataMatrix : "+dataMatrix);
          //System.out.println("-----------------------------------------------------------------");
         return results;
     }
@@ -543,7 +543,7 @@ public class AlternariaModel extends I18nImpl implements Model{
         System.out.println("Data matrix in JSON : "+gson.toJson(dataMatrix));
    */     
                 
-        //System.out.println("Data matrix : "+dataMatrix ); 
+    //    System.out.println("Data matrix : "+dataMatrix ); 
     }
 
   

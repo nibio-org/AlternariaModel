@@ -31,7 +31,23 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author bhabesh
  */
 public class AlternariaModelTest {
-    private           DataMatrix  dataMatrix;
+    private             DataMatrix  dataMatrix;
+    private             String      FILE_WEATHER_DATA_FILE_01       =   "/dataset01/weatherdata_leaf_wetness_temperature.json";
+    private             String      FILE_WEATHER_DATA_RESET_01      =   "/dataset01/reset_dates.json"; 
+    
+    private             String      FILE_WEATHER_DATA_FILE_02       =   "/dataset02/weatherdata_leaf_wetness_temperature_02.json";  
+    private             String      FILE_WEATHER_DATA_RESET_02      =   "/dataset02/reset_dates_02.json";  
+ 
+    private             String      FILE_WEATHER_DATA_FILE_03       =   "/dataset03/weatherdata_leaf_wetness_temperature_03.json";  
+    private             String      FILE_WEATHER_DATA_RESET_03      =   "/dataset03/reset_dates_03.json";  
+    
+    
+    private     final   String      CONST_TEST_DATA_01              =   "TEST_DATA_01";  
+    private     final   String      CONST_TEST_DATA_02              =   "TEST_DATA_02";  
+    private     final   String      CONST_TEST_DATA_03              =   "TEST_DATA_03";  
+    
+    private     final   String      FILE_WEATHER_TEST_DATA          =   CONST_TEST_DATA_03;
+    
     public AlternariaModelTest() {
     }
     
@@ -57,19 +73,19 @@ public class AlternariaModelTest {
     @org.junit.jupiter.api.Test
     public void testGetResult() throws Exception {
         System.out.println("getResult");
-        ModelConfiguration config   = this.getConfiguration("/weatherdata_leaf_wetness_temperature.json");
-        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates("/reset_dates.json"));
+        ModelConfiguration config   = this.getConfiguration(getWeatherDataFile());
+        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates(getResetDataFile()));
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
         List<Result> result = instance.getResult();
         assertNotNull(result);
        
-        /*
-        for(Result res:result)
+        
+/*        for(Result res:result)
         {
             System.out.println(res.toString());
         }
-        */
+  */      
         
     }
 
@@ -235,8 +251,8 @@ public class AlternariaModelTest {
     @org.junit.jupiter.api.Test
     public void testSetConfiguration() throws Exception {
         System.out.println("setConfiguration");
-        ModelConfiguration config = this.getConfiguration("/weatherdata_leaf_wetness_temperature.json");
-        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates("/reset_dates.json"));
+        ModelConfiguration config = this.getConfiguration(getWeatherDataFile());
+        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates(getResetDataFile()));
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
         assertNotNull(instance);
@@ -349,5 +365,43 @@ public class AlternariaModelTest {
             ex.printStackTrace();
             return null;
         } 
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    private String getWeatherDataFile()
+    {
+        switch (FILE_WEATHER_TEST_DATA)
+        {
+            case    CONST_TEST_DATA_01:
+                        return FILE_WEATHER_DATA_FILE_01;
+            case    CONST_TEST_DATA_02:
+                        return FILE_WEATHER_DATA_FILE_02;
+            case    CONST_TEST_DATA_03:
+                        return FILE_WEATHER_DATA_FILE_03;
+            default:
+                        return "N/A";
+                        
+        }
+    }
+        
+     private String getResetDataFile()
+    {
+        switch (FILE_WEATHER_TEST_DATA)
+        {
+            case    CONST_TEST_DATA_01:
+                        return FILE_WEATHER_DATA_RESET_01;
+            case    CONST_TEST_DATA_02:
+                        return FILE_WEATHER_DATA_RESET_02;
+            case    CONST_TEST_DATA_03:
+                        return FILE_WEATHER_DATA_RESET_03; 
+                        
+            default:
+                        return "N/A";
+                        
+        }   
+            
     }
 }
