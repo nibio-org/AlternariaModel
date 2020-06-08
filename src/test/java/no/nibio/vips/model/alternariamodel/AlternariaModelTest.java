@@ -41,12 +41,27 @@ public class AlternariaModelTest {
     private             String      FILE_WEATHER_DATA_FILE_03       =   "/dataset03/weatherdata_leaf_wetness_temperature_03.json";  
     private             String      FILE_WEATHER_DATA_RESET_03      =   "/dataset03/reset_dates_03.json";  
     
+    private             String      FILE_WEATHER_DATA_FILE_04       =   "/dataset04/weatherdata_leaf_wetness_temperature_04_staion_id_11.json";  
+    private             String      FILE_WEATHER_DATA_RESET_04      =   "/dataset04/reset_dates_04.json"; 
+    
+    private             String      FILE_WEATHER_DATA_FILE_05       =   "/dataset05/weatherdata_leaf_wetness_temperature_05_staion_id_11.json";  
+    private             String      FILE_WEATHER_DATA_RESET_05      =   "/dataset05/reset_dates_05.json";
+
+    private             String      FILE_WEATHER_DATA_FILE_06       =   "/dataset06/weatherdata_leaf_wetness_temperature_06_staion_id_118.json";  
+    private             String      FILE_WEATHER_DATA_RESET_06      =   "/dataset06/reset_dates_06.json";
+
+    private             String      FILE_WEATHER_DATA_FILE_07       =   "/dataset07/weatherdata_leaf_wetness_temperature_07_staion_id_118.json";  
+    private             String      FILE_WEATHER_DATA_RESET_07      =   "/dataset07/reset_dates_07.json";
     
     private     final   String      CONST_TEST_DATA_01              =   "TEST_DATA_01";  
     private     final   String      CONST_TEST_DATA_02              =   "TEST_DATA_02";  
     private     final   String      CONST_TEST_DATA_03              =   "TEST_DATA_03";  
+    private     final   String      CONST_TEST_DATA_04              =   "TEST_DATA_04"; 
+    private     final   String      CONST_TEST_DATA_05              =   "TEST_DATA_05";
+    private     final   String      CONST_TEST_DATA_06              =   "TEST_DATA_06";
+    private     final   String      CONST_TEST_DATA_07              =   "TEST_DATA_07";
     
-    private     final   String      FILE_WEATHER_TEST_DATA          =   CONST_TEST_DATA_03;
+    private     final   String      EFFECTED_FILE_WEATHER_TEST_DATA =   CONST_TEST_DATA_06;
     
     public AlternariaModelTest() {
     }
@@ -81,11 +96,11 @@ public class AlternariaModelTest {
         assertNotNull(result);
        
         
-/*        for(Result res:result)
+        for(Result res:result)
         {
             System.out.println(res.toString());
         }
-  */      
+        
         
     }
 
@@ -373,7 +388,7 @@ public class AlternariaModelTest {
      */
     private String getWeatherDataFile()
     {
-        switch (FILE_WEATHER_TEST_DATA)
+        switch (EFFECTED_FILE_WEATHER_TEST_DATA)
         {
             case    CONST_TEST_DATA_01:
                         return FILE_WEATHER_DATA_FILE_01;
@@ -381,6 +396,14 @@ public class AlternariaModelTest {
                         return FILE_WEATHER_DATA_FILE_02;
             case    CONST_TEST_DATA_03:
                         return FILE_WEATHER_DATA_FILE_03;
+            case    CONST_TEST_DATA_04:
+                        return FILE_WEATHER_DATA_FILE_04;  
+            case    CONST_TEST_DATA_05:
+                        return FILE_WEATHER_DATA_FILE_05;  
+            case    CONST_TEST_DATA_06:
+                        return FILE_WEATHER_DATA_FILE_06; 
+            case    CONST_TEST_DATA_07:
+                        return FILE_WEATHER_DATA_FILE_07;                          
             default:
                         return "N/A";
                         
@@ -389,14 +412,23 @@ public class AlternariaModelTest {
         
      private String getResetDataFile()
     {
-        switch (FILE_WEATHER_TEST_DATA)
+        switch (EFFECTED_FILE_WEATHER_TEST_DATA)
         {
             case    CONST_TEST_DATA_01:
                         return FILE_WEATHER_DATA_RESET_01;
             case    CONST_TEST_DATA_02:
                         return FILE_WEATHER_DATA_RESET_02;
             case    CONST_TEST_DATA_03:
-                        return FILE_WEATHER_DATA_RESET_03; 
+                        return FILE_WEATHER_DATA_RESET_03;
+            case    CONST_TEST_DATA_04:
+                        return FILE_WEATHER_DATA_RESET_04;
+            case    CONST_TEST_DATA_05:
+                        return FILE_WEATHER_DATA_RESET_05;
+            case    CONST_TEST_DATA_06:
+                        return FILE_WEATHER_DATA_RESET_06;
+            case    CONST_TEST_DATA_07:
+                        return FILE_WEATHER_DATA_RESET_07;                        
+                        
                         
             default:
                         return "N/A";
