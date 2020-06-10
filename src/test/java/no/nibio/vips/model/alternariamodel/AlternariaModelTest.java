@@ -61,7 +61,7 @@ public class AlternariaModelTest {
     private     final   String      CONST_TEST_DATA_06              =   "TEST_DATA_06";
     private     final   String      CONST_TEST_DATA_07              =   "TEST_DATA_07";
     
-    private     final   String      EFFECTED_FILE_WEATHER_TEST_DATA =   CONST_TEST_DATA_06;
+    private     final   String      EFFECTED_FILE_WEATHER_TEST_DATA =   CONST_TEST_DATA_04;
     
     public AlternariaModelTest() {
     }
@@ -89,17 +89,19 @@ public class AlternariaModelTest {
     public void testGetResult() throws Exception {
         System.out.println("getResult");
         ModelConfiguration config   = this.getConfiguration(getWeatherDataFile());
-        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates(getResetDataFile()));
+        config.setConfigParameter("sprayingDates", this.getConfigurationSprayingDates(getResetDataFile())); 
         AlternariaModel instance = new AlternariaModel();
         instance.setConfiguration(config);
         List<Result> result = instance.getResult();
         assertNotNull(result);
        
-        
+       /* 
         for(Result res:result)
         {
+            // LOGGER.log(Level.INFO, res.toString());
             System.out.println(res.toString());
         }
+       */ 
         
         
     }
@@ -283,7 +285,7 @@ public class AlternariaModelTest {
             config.setModelId(AlternariaModel.MODEL_ID.toString());
             
             
-            config.setConfigParameter("timeZone", "Europe/Helsinki");
+            config.setConfigParameter("timeZone", "Europe/Oslo");
             BufferedInputStream inputStream = new BufferedInputStream(this.getClass().getResourceAsStream(fileName));
             JsonFactory f = new MappingJsonFactory();
             JsonParser jp = f.createParser(inputStream);
@@ -354,25 +356,27 @@ public class AlternariaModelTest {
 
             Date firstDate = null;
             Date lastDate = null;
-            if(all.isArray())
+            if(null != all)
             {
-                for(JsonNode node : all){
-                   
-                    Date timeMeasuredForSpray = (Date)mapper.convertValue(node, new TypeReference<Date>(){});
-                    //System.out.println("Spraying Date : "+timeMeasuredForSpray);
-                    if(timeMeasuredForSpray != null )
-                    {
-                        sprayingDates.add(timeMeasuredForSpray);
+                if(all.isArray())
+                {
+                    for(JsonNode node : all){
+
+                        Date timeMeasuredForSpray = (Date)mapper.convertValue(node, new TypeReference<Date>(){});
+                        //System.out.println("Spraying Date : "+timeMeasuredForSpray);
+                        if(timeMeasuredForSpray != null )
+                        {
+                            sprayingDates.add(timeMeasuredForSpray);
+                        }
+
                     }
 
                 }
-
+                else
+                {
+                    fail("Data input from file is not a JSON array for list of spraying dates");
+                }
             }
-            else
-            {
-                fail("Data input from file is not a JSON array for list of spraying dates");
-            }
-
 
             
             return sprayingDates;

@@ -52,5 +52,10 @@ public class DataMatrix extends DateMap{
     public final static String  SPRAYING_DATES                  =   "sprayingDates";//  Spraying dates
     public final static String  SPRAYING_DATE                   =   "sprayingDate"; //   Spray Date
     
+    public final static String  THRESHOLD_DSV_BASE              =   "THRESHOLD_DSV_BASE"; //   THRESHOLD_DSV_BASE
+    public final static String  THRESHOLD_DSV_MAX               =   "THRESHOLD_DSV_MAX"; //   THRESHOLD_DSV_MAX
+
+    
+    
     
 }

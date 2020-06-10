@@ -48,6 +48,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import no.nibio.vips.entity.ModelConfiguration;
 import no.nibio.vips.entity.Result;
 import no.nibio.vips.entity.ResultImpl;
@@ -62,12 +64,13 @@ import no.nibio.vips.util.JSONUtil;
 import no.nibio.vips.util.ModelUtil;
 import no.nibio.vips.util.WeatherUtil;
 
+
 /**
  *
  * @author bhabesh
  */
 public class AlternariaModel extends I18nImpl implements Model{
-  
+    public final static Logger      LOGGER              =   Logger.getLogger(AlternariaModel.class.getName());
     public final static String      NAME_MODEL_ID       =   "ALTERNARIA";
     public final static ModelId     MODEL_ID            =   new ModelId(NAME_MODEL_ID);
     public final static int         THRESHOLD_LW        =   30;                         // Threshold for leave wetness
@@ -93,6 +96,7 @@ public class AlternariaModel extends I18nImpl implements Model{
     @Override
     public List<Result> getResult() throws ModelExcecutionException
     {
+        
         /**
          * method name : getResult
          * @param      :
@@ -119,7 +123,12 @@ public class AlternariaModel extends I18nImpl implements Model{
         {
             Result              result              = new ResultImpl();
             
-                                
+                                if(null == dataMatrix.getParamStringValueForDate(currentDate, DataMatrix.SPRAYING_DATE))
+                                {
+                                    // DO Nothing -- Consider same accumulatedDSV
+                                }
+                                else
+                                {
                                     if(dataMatrix.getParamStringValueForDate(currentDate, DataMatrix.SPRAYING_DATE).equals(YES))
                                     {
                                         accumulatedDSV  = 0;
@@ -129,24 +138,28 @@ public class AlternariaModel extends I18nImpl implements Model{
                                     {
                                         accumulatedDSV      =   accumulatedDSV  +   dataMatrix.getParamIntValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE);
                                     }
+                                }
                                     
                                 
                     result.setValidTimeStart(currentDate);
                     result.setWarningStatus(getWarningStatus(accumulatedDSV));
-                    
+
                     result.setValue(CommonNamespaces.NS_WEATHER, DataMatrix.TEMPERATURE_MEAN, dFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.TEMPERATURE_MEAN)));
                     result.setValue(NAME_MODEL_ID, DataMatrix.WET_HOUR, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.LEAF_WETNESS_DURATION)));
                     result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE_SUM, iFormat.format(accumulatedDSV));
                     result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE)));
-                   
+
+                    result.setValue(NAME_MODEL_ID, DataMatrix.THRESHOLD_DSV_BASE, String.valueOf(THRESHOLD_DSV_BASE));
+                    result.setValue(NAME_MODEL_ID, DataMatrix.THRESHOLD_DSV_MAX, String.valueOf(THRESHOLD_DSV_MIN));
+                    
                     results.add(result);
                     
             cal.setTime(currentDate);
             cal.add(Calendar.DATE, 1);
             currentDate = cal.getTime();               
         }
-    //    System.out.println("DataMatrix : "+dataMatrix);
-         //System.out.println("-----------------------------------------------------------------");
+
+        //LOGGER.log(Level.INFO, "DataMatrix-Value 03: "+dataMatrix);
         return results;
     }
 
@@ -389,9 +402,7 @@ public class AlternariaModel extends I18nImpl implements Model{
         WeatherUtil wUtil = new WeatherUtil();
                 // Setting timezone
         this.timeZone = TimeZone.getTimeZone((String) config.getConfigParameter("timeZone"));
-        //System.out.println("TimeZone=" + this.timeZone);
-                            
-                            
+
                                     sprayingDates                                   =   (null == mapper.convertValue(config.getConfigParameter(DataMatrix.SPRAYING_DATES), new TypeReference<List<Date>>(){})) 
                                                                                         ?   null
                                                                                         :   mapper.convertValue(config.getConfigParameter(DataMatrix.SPRAYING_DATES), new TypeReference<List<Date>>(){});
@@ -404,7 +415,7 @@ public class AlternariaModel extends I18nImpl implements Model{
         {
                 
                 weatherObj.setTimeMeasured(wUtil.pragmaticAdjustmentToMidnight(weatherObj.getTimeMeasured(), timeZone));
-                //System.out.println(" weatherObj : "+weatherObj);
+                
                 Date    sprayDate   =   null;
                 
                 switch(weatherObj.getElementMeasurementTypeId())
@@ -538,12 +549,8 @@ public class AlternariaModel extends I18nImpl implements Model{
             dateHourlyLw_previousDay = dateHourlyLw_currentDay;
             
         }
- /*
-        Gson gson   = new Gson();
-        System.out.println("Data matrix in JSON : "+gson.toJson(dataMatrix));
-   */     
-                
-    //    System.out.println("Data matrix : "+dataMatrix ); 
+   
+          //LOGGER.log(Level.INFO, dataMatrix.toString());
     }
 
   
