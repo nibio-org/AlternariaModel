@@ -17,7 +17,7 @@
 /*
  * 
 
-Copyright (c) 2016 NIBIO <http://www.nibio.no/>. 
+Copyright (c) 2020 NIBIO <http://www.nibio.no/>. 
             
 This file is part of AlternariaModel.  
 AlternariaModel is free software: you can redistribute it and/or modify  
@@ -39,7 +39,6 @@ package no.nibio.vips.model.alternariamodel;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import no.nibio.vips.entity.ModelConfiguration;
 import no.nibio.vips.entity.Result;
@@ -60,7 +58,6 @@ import no.nibio.vips.model.Model;
 import no.nibio.vips.model.ModelExcecutionException;
 import no.nibio.vips.model.ModelId;
 import no.nibio.vips.util.CommonNamespaces;
-import no.nibio.vips.util.JSONUtil;
 import no.nibio.vips.util.ModelUtil;
 import no.nibio.vips.util.WeatherUtil;
 
