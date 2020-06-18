@@ -361,7 +361,7 @@ public class AlternariaModel extends I18nImpl implements Model{
          *
          * date        : Expression date is undefined on line 20, column 19 in Templates/Classes/Code/GeneratedMethodBody. Expression time is undefined on line 20, column 27 in Templates/Classes/Code/GeneratedMethodBody.
          */
-        return "TODO";
+        return this.getText("sampleconfig", Model.DEFAULT_LANGUAGE);
     }
 
     /**
