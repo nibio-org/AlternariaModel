@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import no.nibio.vips.entity.ModelConfiguration;
 import no.nibio.vips.entity.Result;
@@ -361,7 +362,7 @@ public class AlternariaModel extends I18nImpl implements Model{
          *
          * date        : Expression date is undefined on line 20, column 19 in Templates/Classes/Code/GeneratedMethodBody. Expression time is undefined on line 20, column 27 in Templates/Classes/Code/GeneratedMethodBody.
          */
-        return "TODO";
+        return this.getText("sampleconfig", Model.DEFAULT_LANGUAGE);
     }
 
     /**
