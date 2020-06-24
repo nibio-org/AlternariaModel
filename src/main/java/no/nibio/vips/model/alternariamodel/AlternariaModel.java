@@ -72,9 +72,8 @@ public class AlternariaModel extends I18nImpl implements Model{
     public final static String      NAME_MODEL_ID       =   "ALTERNARIA";
     public final static ModelId     MODEL_ID            =   new ModelId(NAME_MODEL_ID);
     public final static int         THRESHOLD_LW        =   30;                         // Threshold for leave wetness
-    public final static int         THRESHOLD_DSV_MIN   =   20;                         // Threshold Minimum for DSV 
-    public final static int         THRESHOLD_DSV_MAX   =   30;                         // Threshold Maximum for DSV 
-    public final static int         THRESHOLD_DSV_BASE  =   5;                         // Threshold Maximum for DSV 
+    public final static int         THRESHOLD_DSV_MAX   =   20;                         // Threshold Minimum for DSV 
+    public final static int         THRESHOLD_DSV_DIFF_MIN_MAX  =   5;                         // Threshold Maximum for DSV 
     
     public final static String      YES                 =   "Y";                        //   Spray Date
     public final static String      NO                  =   "N"; 
@@ -147,8 +146,8 @@ public class AlternariaModel extends I18nImpl implements Model{
                     result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE_SUM, iFormat.format(accumulatedDSV));
                     result.setValue(NAME_MODEL_ID, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE, iFormat.format(this.dataMatrix.getParamValueForDate(currentDate, DataMatrix.DAILY_DISEASE_SEVERITY_VALUE)));
 
-                    result.setValue(NAME_MODEL_ID, DataMatrix.THRESHOLD_DSV_BASE, String.valueOf(THRESHOLD_DSV_BASE));
-                    result.setValue(NAME_MODEL_ID, DataMatrix.THRESHOLD_DSV_MAX, String.valueOf(THRESHOLD_DSV_MIN));
+                    result.setValue(NAME_MODEL_ID, DataMatrix.THRESHOLD_DSV_BASE, String.valueOf(THRESHOLD_DSV_MAX - THRESHOLD_DSV_DIFF_MIN_MAX));
+                    result.setValue(NAME_MODEL_ID, DataMatrix.THRESHOLD_DSV_MAX, String.valueOf(THRESHOLD_DSV_MAX));
                     
                     results.add(result);
                     
@@ -739,20 +738,20 @@ public class AlternariaModel extends I18nImpl implements Model{
   
         if (accumulatedDSV >= 0)
         {
-            if(accumulatedDSV >= THRESHOLD_DSV_MIN)
+            if(accumulatedDSV >= THRESHOLD_DSV_MAX)
             {
                 result = Result.WARNING_STATUS_HIGH_RISK;
             }
             else
             {
                 // e.g. 20 -- 30
-                if((accumulatedDSV < THRESHOLD_DSV_MIN) && (accumulatedDSV >= (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE)) )
+                if((accumulatedDSV < THRESHOLD_DSV_MAX) && (accumulatedDSV >= (THRESHOLD_DSV_MAX - THRESHOLD_DSV_DIFF_MIN_MAX)) )
                 {
                     result = Result.WARNING_STATUS_MINOR_RISK;
                 }
                 else
                 {
-                    if(accumulatedDSV < (THRESHOLD_DSV_MIN - THRESHOLD_DSV_BASE))
+                    if(accumulatedDSV < (THRESHOLD_DSV_MAX - THRESHOLD_DSV_DIFF_MIN_MAX))
                     {
                         result = Result.WARNING_STATUS_NO_RISK;
                     }
